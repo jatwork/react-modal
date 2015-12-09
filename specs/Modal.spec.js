@@ -113,6 +113,7 @@ describe('Modal', function () {
   it('supports adding style to the modal contents', function () {
     var modal = renderModal({isOpen: true, style: {width: '20px'}});
     equal(modal.portal.refs.content.getDOMNode().style.width, '20px');
+    unmountModal();
   });
 
   it('adds class to body when open', function() {
@@ -122,9 +123,34 @@ describe('Modal', function () {
     modal.setProps({ isOpen: true});
     equal(document.body.className.contains('ReactModal__Body--open'), true);
 
-    modal = renderModal({isOpen: false});
+    modal.setProps({ isOpen: false});
     equal(document.body.className.contains('ReactModal__Body--open'), false);
     unmountModal();
+  });
+
+  context('multiple modal instances', function() {
+    it('adds class to body when open', function() {
+      var modal = renderModal({isOpen: true});
+      equal(document.body.className.contains('ReactModal__Body--open'), true);
+      //
+      var newNode = document.createElement('div');
+      document.body.appendChild(newNode);
+      var newModal = React.render(React.createElement(Modal, {isOpen: true, ariaHideApp: false}), newNode);
+      
+      equal(document.body.className.contains('ReactModal__Body--open'), true);
+
+      newModal.setProps({isOpen: false});
+      equal(document.body.className.contains('ReactModal__Body--open'), true);
+      //
+      React.unmountComponentAtNode(newNode);
+      document.body.removeChild(newNode);
+      //
+      equal(document.body.className.contains('ReactModal__Body--open'), true);
+
+      modal.setProps({isOpen: false});
+      equal(document.body.className.contains('ReactModal__Body--open'), false);
+      unmountModal();
+    });
   });
 
   it('adds --after-open for animations', function() {
