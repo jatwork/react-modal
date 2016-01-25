@@ -36,6 +36,7 @@ var App = React.createClass({
         <button onClick={this.openModal}>Open Modal</button>
         <Modal
           className="Modal__Bootstrap modal-dialog"
+          extraContentElement={<div style={{position: 'absolute', width: 100, height: 100, left: 0, top: '50%'}}/>}
           closeTimeoutMS={150}
           isOpen={this.state.modalIsOpen}
           onRequestClose={this.handleModalCloseRequest}
